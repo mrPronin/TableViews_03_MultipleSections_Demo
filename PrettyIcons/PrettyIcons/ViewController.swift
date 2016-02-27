@@ -23,42 +23,54 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-  var icons = [Icon]()
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
     
-    let iconSets = IconSet.iconSets()
-    let iconSet = iconSets[0]
-    icons = iconSet.icons
-    automaticallyAdjustsScrollViewInsets = false
-  }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-  }
+    // MARK: - Vars
+    var iconSets = [IconSet]()
+    
+    // MARK: - UIViewController
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        iconSets = IconSet.iconSets()
+        automaticallyAdjustsScrollViewInsets = false
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
 }
 
 extension ViewController : UITableViewDataSource {
-  
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return icons.count
-  }
-  
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("IconCell", forIndexPath: indexPath)
-    let icon = icons[indexPath.row]
     
-    cell.textLabel?.text = icon.title
-    cell.detailTextLabel?.text = icon.subtitle
-    
-    if let imageView = cell.imageView, iconImage = icon.image {
-      imageView.image = iconImage
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return iconSets.count
     }
-
-    return cell
-  }
-  
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let iconSet = iconSets[section]
+        return iconSet.icons.count
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let iconSet = iconSets[section]
+        return iconSet.name
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("IconCell", forIndexPath: indexPath)
+        
+        let iconSet = iconSets[indexPath.section]
+        let icon = iconSet.icons[indexPath.row]
+        
+        cell.textLabel?.text = icon.title
+        cell.detailTextLabel?.text = icon.subtitle
+        
+        if let imageView = cell.imageView, iconImage = icon.image {
+            imageView.image = iconImage
+        }
+        
+        return cell
+    }
+    
 }
